@@ -20,6 +20,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/hashicorp/go-multierror"
 	"github.com/pulumi/pulumi/pkg/v3/codegen/schema"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/resource"
@@ -131,6 +132,9 @@ func serializeTypeAsPropertyType(
 ) (schema.TypeSpec, error) {
 	for t.Kind() == reflect.Pointer {
 		t = t.Elem()
+	}
+	if t == reflect.TypeOf(uuid.UUID{}) {
+		return schema.TypeSpec{Type: "string", Plain: false}, nil
 	}
 	// Provider authors should not be using resource.Asset directly, but rather types.AssetOrArchive.
 	// We will returrn an error if resource.Asset is used directly for an input.
