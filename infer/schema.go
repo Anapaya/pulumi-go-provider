@@ -15,6 +15,7 @@
 package infer
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
@@ -119,6 +120,9 @@ func serializeTypeAsPropertyType(
 		t = t.Elem()
 	}
 	if t == reflect.TypeOf(uuid.UUID{}) {
+		return schema.TypeSpec{Type: "string", Plain: false}, nil
+	}
+	if t == reflect.TypeOf(json.RawMessage{}) {
 		return schema.TypeSpec{Type: "string", Plain: false}, nil
 	}
 	if t == reflect.TypeOf(resource.Asset{}) {
