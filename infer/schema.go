@@ -15,6 +15,7 @@
 package infer
 
 import (
+	"encoding/json"
 	"fmt"
 	"maps"
 	"reflect"
@@ -134,6 +135,9 @@ func serializeTypeAsPropertyType(
 		t = t.Elem()
 	}
 	if t == reflect.TypeOf(uuid.UUID{}) {
+		return schema.TypeSpec{Type: "string", Plain: false}, nil
+	}
+	if t == reflect.TypeOf(json.RawMessage{}) {
 		return schema.TypeSpec{Type: "string", Plain: false}, nil
 	}
 	// Provider authors should not be using resource.Asset directly, but rather types.AssetOrArchive.
