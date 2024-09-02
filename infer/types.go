@@ -265,13 +265,17 @@ func registerTypes[T any](reg schema.RegisterDerivativeType) error {
 			return false, nil
 		}
 		if enum, ok := isEnum(t); ok {
-			if info != nil && info.Optional && !isReference {
-				return false, optionalNeedsPointerError{
-					ParentStruct: parent,
-					PropertyName: field,
-					Kind:         "enum",
-				}
-			}
+			// XXX: Introduced in https://github.com/pulumi/pulumi-go-provider/pull/206.
+			// We rely heavily on non-pointer zero values as we do not see a need to differentiate
+			// between a zero value and the absence of a value.
+			//
+			// if info != nil && info.Optional && !isReference {
+			// 	return false, optionalNeedsPointerError{
+			// 		ParentStruct: parent,
+			// 		PropertyName: field,
+			// 		Kind:         "enum",
+			// 	}
+			// }
 
 			tSpec := pschema.ComplexTypeSpec{}
 			for _, v := range enum.values {
@@ -301,13 +305,17 @@ func registerTypes[T any](reg schema.RegisterDerivativeType) error {
 				return false, err
 			}
 
-			if info != nil && info.Optional && !isReference {
-				return false, optionalNeedsPointerError{
-					ParentStruct: parent,
-					PropertyName: field,
-					Kind:         t.Kind().String(),
-				}
-			}
+			// XXX: Introduced in https://github.com/pulumi/pulumi-go-provider/pull/206.
+			// We rely heavily on non-pointer zero values as we do not see a need to differentiate
+			// between a zero value and the absence of a value.
+			//
+			// if info != nil && info.Optional && !isReference {
+			// 	return false, optionalNeedsPointerError{
+			// 		ParentStruct: parent,
+			// 		PropertyName: field,
+			// 		Kind:         t.Kind().String(),
+			// 	}
+			// }
 
 			return reg(tk, pschema.ComplexTypeSpec{ObjectTypeSpec: *spec}), nil
 		}
