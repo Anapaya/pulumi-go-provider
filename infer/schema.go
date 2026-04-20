@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/go-multierror"
@@ -129,6 +130,9 @@ func serializeTypeAsPropertyType(
 ) (schema.TypeSpec, error) {
 	for t.Kind() == reflect.Pointer {
 		t = t.Elem()
+	}
+	if t == reflect.TypeOf(time.Time{}) {
+		return schema.TypeSpec{Type: "string", Plain: false}, nil
 	}
 	if t == reflect.TypeOf(uuid.UUID{}) {
 		return schema.TypeSpec{Type: "string", Plain: false}, nil
